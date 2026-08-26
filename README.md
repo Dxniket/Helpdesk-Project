@@ -1,5 +1,37 @@
 # Helpdesk – Ticket and Task Management System
 
+An internal helpdesk application for creating, managing and tracking support tickets, developed as a four-week summer project.
+
+## Live Demo
+
+🌐 [Open Helpdesk Web Application](https://helpdesk-web-ere2edcnh8grd6ab.germanywestcentral-01.azurewebsites.net)
+
+🔧 [Open API Documentation (Swagger)](https://helpdesk-api-cebjdkgehwhxgxfk.germanywestcentral-01.azurewebsites.net/Swagger)
+
+> The application is hosted on Microsoft Azure. The interface itself is currently available in German.
+
+---
+
+## Screenshots
+
+### Home Page
+
+![Helpdesk Home Page](screenshots/home.png)
+
+### User Dashboard
+
+![Helpdesk Dashboard](screenshots/dashboard.png)
+
+### Ticket Details
+
+![Ticket Details](screenshots/ticket-details.png)
+
+### User Management
+
+![User Management](screenshots/user-management.png)
+
+---
+
 ## Project Overview
 
 **Project:** Development of an Internal Ticket and Task Management System
@@ -8,8 +40,7 @@
 
 **Project Duration:** Approx. 1 month (4 weeks)
 
-**Apprenticeship:** Software-Developer
-
+**Apprenticeship:** Software Developer
 
 **Technologies:**
 
@@ -28,7 +59,7 @@
 
 As part of a four-week summer project, an internal web application was developed to manage support tickets within a company.
 
-Users can create, edit, and comment on tickets. Administrators can manage users, process tickets, assign responsible users, and track the ticket history.
+Users can create, edit and comment on tickets. Administrators can manage users, process tickets, assign responsible users and track the ticket history.
 
 ---
 
@@ -48,8 +79,7 @@ Communication between the frontend and the database is handled exclusively throu
 
 ### User Features
 
-* Login
-* Logout
+* Login and logout
 * Edit profile
 * Change password
 * Change email address and phone number
@@ -80,13 +110,11 @@ Communication between the frontend and the database is handled exclusively throu
 
 ## Ticket Management
 
-* Create tickets
-* Edit tickets
+* Create and edit tickets
 * View ticket details
-* Comments
+* Comment system
 * Ticket history (TicketLogs)
-* File upload
-* File download
+* File upload and download
 * Comment pagination
 * Character limits with live counter
 * Editing disabled for closed tickets
@@ -158,7 +186,7 @@ Users can upload files directly when creating a ticket.
 
 A complete installation guide is available in:
 
-`Installation.md`
+[`Installation.md`](Installation.md)
 
 It covers the following steps:
 
@@ -174,12 +202,12 @@ It covers the following steps:
 
 The complete development documentation is available in:
 
-`Projektdokumentation.md`
+[`Projektdokumentation.md`](Projektdokumentation.md)
 
 ---
 
 ## Author
 
-**Name:** Daniel 
+**Name:** Daniel
 
 **Project:** Summer Project – Ticket and Task Management System
