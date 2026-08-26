@@ -198,7 +198,7 @@ It covers the following steps:
 
 The complete development documentation is available in:
 
-[`Projektdokumentation.md`](Projektdokumentation.md)
+[`Dokumentation.md`](Dokumentation.md)
 
 ---
 
