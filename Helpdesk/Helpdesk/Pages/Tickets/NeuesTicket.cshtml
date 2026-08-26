@@ -1,0 +1,173 @@
+﻿@page
+@model Helpdesk.Pages.Tickets.NeuesTicketModel
+
+@{
+    ViewData["Title"] = "Neues Ticket";
+}
+
+<div class="container mt-4">
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+
+            @Model.ErrorMessage
+
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>
+
+                Neues Ticket
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Erstelle ein neues Support-Ticket.
+
+            </p>
+
+        </div>
+
+        <a asp-page="/Tickets/MeineTickets"
+           class="btn btn-outline-secondary">
+
+            Zurück
+
+        </a>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <form method="post"
+                  enctype="multipart/form-data">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Titel
+
+                    </label>
+
+                    <input type="text"
+                           id="Titel"
+                           name="Titel"
+                           class="form-control"
+                           value="@Model.Titel"
+                           maxlength="120"
+                           required />
+
+                    <div class="text-end">
+
+                        <small id="titelCounter"
+                               class="text-muted">
+
+                            0 / 120
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Beschreibung
+
+                    </label>
+
+                    <textarea id="Beschreibung"
+                              name="Beschreibung"
+                              class="form-control"
+                              rows="6"
+                              maxlength="2000"
+                              required>@Model.Beschreibung</textarea>
+
+                    <div class="text-end">
+
+                        <small id="beschreibungCounter"
+                               class="text-muted">
+
+                            0 / 2000
+
+                        </small>
+
+                    </div>
+
+                </div>
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        Anhänge
+
+                    </label>
+
+                    <input id="dateien"
+                           name="dateien"
+                           class="form-control"
+                           type="file"
+                           accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xlsx" />
+
+                    <small class="text-muted">
+
+                        Beim Erstellen kann eine Datei hinzugefügt werden. Nach dem Erstellen können insgesamt bis zu 3 Anhänge ergänzt werden (jeweils bis zu 50 MB).
+
+                    </small>
+                    </br>
+                    <small class="text-muted">
+                        Erlaubte Dateitypen: PDF, PNG, JPG, JPEG, DOC, DOCX und XLSX.
+                    </small>
+
+
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    Ticket erstellen
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    $("#Titel").on("input", function ()
+    {
+        $("#titelCounter").text(
+            $(this).val().length + " / 120");
+    });
+
+    $("#Beschreibung").on("input", function ()
+    {
+        $("#beschreibungCounter").text(
+            $(this).val().length + " / 2000");
+    });
+
+        
+
+
+    //trigger("input") führt das input-Ereignis künstlich aus, als hätte der Benutzer gerade etwas eingegeben
+    $("#Titel").trigger("input");
+    $("#Beschreibung").trigger("input");
+
+</script>

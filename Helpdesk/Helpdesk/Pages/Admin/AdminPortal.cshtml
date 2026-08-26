@@ -1,0 +1,257 @@
+﻿@page
+@using Helpdesk.Provider
+@model Helpdesk.Pages.Admin.AdminPortalModel
+
+@{
+    ViewData["Title"] = "Benutzerverwaltung";
+}
+
+<div class="container mt-4">
+
+    @if (!string.IsNullOrEmpty(Model.InfoMessage))
+    {
+        <div class="alert alert-success">
+            @Model.InfoMessage
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2>Benutzerverwaltung</h2>
+            <p class="text-muted mb-0">
+                Alle Benutzer anzeigen und verwalten.
+            </p>
+        </div>
+
+        <div>
+
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    id="btnQuickUser">
+                Schnell Benutzer anlegen
+            </button>
+
+            <a asp-page="/Admin/NeuerBenutzer"
+               class="btn btn-success">
+                Neuer Benutzer
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">Administratoren</h5>
+        </div>
+
+        <div class="card-body">
+
+            <table id="adminTable"
+                   data-toggle="table"
+                   data-search="true"
+                   data-pagination="true"
+                   data-page-size="10"
+                   data-page-list="[5,10,25,50]"
+                   data-show-refresh="true"
+                   data-show-columns="true">
+
+                <thead>
+                    <tr>
+                        <th data-field="BenutzerId" data-sortable="true">ID</th>
+                        <th data-field="Vorname" data-sortable="true">Vorname</th>
+                        <th data-field="Nachname" data-sortable="true">Nachname</th>
+                        <th data-field="Email" data-sortable="true">E-Mail</th>
+                        <th data-field="Telefonnummer" data-sortable="true">Telefonnummer</th>
+                        <th data-field="Aktion">Aktion</th>
+                    </tr>
+                </thead>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow">
+
+        <div class="card-header">
+            <h5 class="mb-0">Benutzer</h5>
+        </div>
+
+        <div class="card-body">
+
+            <table id="userTable"
+                   data-toggle="table"
+                   data-search="true"
+                   data-pagination="true"
+                   data-page-size="10"
+                   data-page-list="[5,10,25,50]"
+                   data-show-refresh="true"
+                   data-show-columns="true">
+
+                <thead>
+                    <tr>
+                        <th data-field="BenutzerId" data-sortable="true">ID</th>
+                        <th data-field="Vorname" data-sortable="true">Vorname</th>
+                        <th data-field="Nachname" data-sortable="true">Nachname</th>
+                        <th data-field="Email" data-sortable="true">E-Mail</th>
+                        <th data-field="Telefonnummer" data-sortable="true">Telefonnummer</th>
+                        <th data-field="Aktion">Aktion</th>
+                    </tr>
+                </thead>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="dlgNeuerBenutzer" title="Schnell Benutzer anlegen" style="display:none;">
+
+    <div class="mb-3">
+        <label>Vorname</label>
+        <input id="txtVorname" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Nachname</label>
+        <input id="txtNachname" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>E-Mail</label>
+        <input id="txtEmail" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Telefonnummer</label>
+        <input id="txtTelefonnummer" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Passwort</label>
+        <input id="txtPasswort"
+               type="password"
+               class="form-control" />
+    </div>
+
+    <div class="form-check">
+
+        <input id="chkAdmin"
+               type="checkbox"
+               class="form-check-input" />
+
+        <label class="form-check-label">
+            Administrator
+        </label>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        var users = @Html.Raw(Model.UsersAsJson);
+
+        var admins = [];
+        var benutzer = [];
+
+        for (var i = 0; i < users.length; i++)
+        {
+            users[i].Aktion =
+                "<a class='btn btn-primary btn-sm' href='/Admin/BenutzerDetails?benutzerId="
+                + users[i].BenutzerId +
+                "'>Details</a>";
+
+            if (users[i].IsAdmin)
+            {
+                admins.push(users[i]);
+            }
+            else
+            {
+                benutzer.push(users[i]);
+            }
+        }
+
+        $(function ()
+        {
+            $("#adminTable").bootstrapTable("load", admins);
+            $("#userTable").bootstrapTable("load", benutzer);
+        });
+
+        $("#btnQuickUser").click(function ()
+        {
+            $("#dlgNeuerBenutzer").dialog({
+
+                modal: true,
+
+                width: 500,
+
+                buttons:
+                {
+                    "Speichern": function ()
+                    {
+                        saveUser();
+                    },
+
+                    "Abbrechen": function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+
+            });
+        });
+
+        function saveUser()
+        {
+                    $.ajax({
+
+            url: "@HelpdeskConfigProvider.APIBaseURL/api/Admin/SaveBenutzer",
+
+            type: "POST",
+
+            contentType: "application/json",
+
+            data: JSON.stringify({
+                BenutzerId: 0,
+                Vorname: $("#txtVorname").val(),
+                Nachname: $("#txtNachname").val(),
+                Email: $("#txtEmail").val(),
+                Telefonnummer: $("#txtTelefonnummer").val(),
+                Passwort: $("#txtPasswort").val(),
+                IsAdmin: $("#chkAdmin").is(":checked")
+            }),
+
+            success: function (res)
+            {
+                if (!res.succeeded)
+                {
+                    alert(res.errorMessage);
+                    return;
+                }
+
+                location.reload();
+            },
+
+            error: function (xhr)
+            {
+                console.log(xhr);
+                alert("Fehler");
+            }
+
+        });
+        }
+
+    </script>
+}

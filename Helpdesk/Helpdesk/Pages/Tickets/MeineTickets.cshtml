@@ -1,0 +1,101 @@
+﻿@page
+@model Helpdesk.Pages.Tickets.MeineTicketsModel
+
+@{
+    ViewData["Title"] = "Meine Tickets";
+}
+
+<div class="container mt-4">
+
+    @if (!string.IsNullOrEmpty(Model.InfoMessage))
+    {
+        <div class="alert alert-success">
+            @Model.InfoMessage
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>Meine Tickets</h2>
+
+            <p class="text-muted mb-0">
+                Übersicht aller erstellten Tickets.
+            </p>
+
+        </div>
+
+        <a asp-page="/Tickets/NeuesTicket"
+           class="btn btn-success">
+            Neues Ticket
+        </a>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table id="table"
+                   data-toggle="table"
+                   data-search="true"
+                   data-pagination="true"
+                   data-page-size="10"
+                   data-page-list="[5,10,25,50]"
+                   data-show-refresh="true"
+                   data-show-columns="true">
+
+                <thead>
+
+                    <tr>
+
+                        <th data-field="TicketId" data-sortable="true">
+                            ID
+                        </th>
+
+                        <th data-field="Titel" data-sortable="true">
+                            Titel
+                        </th>
+
+                      
+
+                        <th data-field="ErstelltAm" data-sortable="true">
+                            Erstellt
+                        </th>
+
+                        <th data-field="Aktion">
+                            Aktion
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        var tickets = @Html.Raw(Model.TicketsAsJson);
+
+                tickets.forEach(ticket => {
+            ticket.ErstelltAm = ticket.ErstelltAm.substring(0, 10);
+
+            ticket.Aktion = `<a class="btn btn-primary btn-sm" href="/Tickets/TicketDetails?ticketId=${ticket.TicketId}">Details</a>`;
+        });
+
+        $(function ()
+        {
+            $("#table").bootstrapTable("load", tickets);
+        });
+
+    </script>
+}

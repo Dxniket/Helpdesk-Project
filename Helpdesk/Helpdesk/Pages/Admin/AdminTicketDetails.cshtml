@@ -1,0 +1,766 @@
+﻿@page
+@using HelpdeskAPIClient
+@model Helpdesk.Pages.Admin.AdminTicketDetailsModel
+
+@{
+    ViewData["Title"] = "Ticketdetails";
+}
+
+@if (!string.IsNullOrEmpty(Model.InfoMessage))
+{
+    <div class="alert alert-success">
+
+        @Model.InfoMessage
+
+    </div>
+}
+
+<div class="container mt-4">
+
+    <form method="post">
+
+        <input type="hidden"
+               name="TicketId"
+               value="@Model.Ticket.TicketId" />
+
+        <div class="d-flex justify-content-between align-items-start mb-4">
+
+            <div>
+
+                <div class="text-muted fst-italic">
+
+                    Ticket #@Model.Ticket.TicketId
+
+                </div>
+
+                <div class="fs-3 fw-semibold mb-2">
+
+                    @Model.Ticket.Titel
+
+                </div>
+
+                <span class="badge bg-primary">
+
+                    @Model.Ticket.WertStatus
+
+                </span>
+
+                <span class="badge bg-warning text-dark ms-2">
+
+                    @Model.Ticket.WertPriority
+
+                </span>
+
+            </div>
+
+            <div class="d-flex gap-2">
+
+                <a asp-page="/Admin/TicketVerwaltung"
+                   class="btn btn-outline-secondary">
+
+                    Zurück
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-lg-6">
+
+                <div class="card shadow h-100">
+
+                    <div class="card-header fw-semibold">
+
+                        Ticketinformationen
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-borderless mb-0">
+
+                            <tr>
+
+                                <th style="width:220px;">
+
+                                    Status
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.WertStatus
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Priorität
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.WertPriority
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Bearbeiter
+
+                                </th>
+
+                                <td>
+
+                                    @if (Model.Ticket.BearbeiterId == null)
+                                    {
+                                        <span class="text-muted">
+
+                                            Kein Bearbeiter zugewiesen
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @(Model.Ticket.BearbeiterVorname + " " + Model.Ticket.BearbeiterNachname)
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Erstellt
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+
+                                </td>
+
+                            </tr>
+
+                            
+
+                            <tr>
+
+                                <th>
+
+                                    Ticket zuletzt geändert
+
+                                </th>
+
+                                <td>
+
+                                    @if (Model.Ticket.ErstelltAm == Model.Ticket.AktualisiertAm)
+                                    {
+                                        <span class="text-muted">
+
+                                            Noch nicht geändert
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @(Model.Ticket.AktualisiertAm?.ToString("dd.MM.yyyy HH:mm") ?? "Noch nicht bearbeitet")
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="card shadow h-100">
+
+                    <div class="card-header fw-semibold">
+
+                        Ersteller
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-borderless mb-0">
+
+                            <tr>
+
+                                <th style="width:170px;">
+
+                                    Name
+
+                                </th>
+
+                                <td>
+
+                                    <strong>
+
+                                        @Model.Ticket.Vorname
+                                        @Model.Ticket.Nachname
+
+                                    </strong>
+
+                                    <br />
+
+                                    <small class="text-muted">
+
+                                        Benutzer-ID:
+                                        @Model.Ticket.BenutzerId
+
+                                    </small>
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    E-Mail
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.Email
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Telefonnummer
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.Telefonnummer
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        @if (Model.Ticket.StatusId != 3)
+        {
+            <div class="card shadow mb-4">
+
+                <div class="card-header fw-semibold">
+
+                    Ticket bearbeiten
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+
+                                Bearbeiter
+
+                            </label>
+
+                            <select class="form-select"
+                                    name="BearbeiterId">
+
+                                <option value="">
+                                    Kein Bearbeiter
+                                </option>
+
+                                @foreach (BenutzerModel b in Model.Benutzer)
+                                {
+                                    if (Model.Ticket.BearbeiterId == b.BenutzerId)
+                                    {
+                                        <option selected
+                                                value="@b.BenutzerId">
+                                            @b.Vorname @b.Nachname
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@b.BenutzerId">
+                                            @b.Vorname @b.Nachname
+                                        </option>
+                                    }
+                                }
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+
+                                Status
+
+                            </label>
+
+                            <select class="form-select"
+                                    name="StatusId">
+
+                                <option value="1" selected="@(Model.Ticket.StatusId == 1)">Offen</option>
+                                <option value="2" selected="@(Model.Ticket.StatusId == 2)">In Bearbeitung</option>
+                                <option value="3" selected="@(Model.Ticket.StatusId == 3)">Geschlossen</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+
+                                Priorität
+
+                            </label>
+
+                            <select class="form-select"
+                                    name="PriorityId">
+
+                                <option value="1" selected="@(Model.Ticket.PriorityId == 1)">Niedrig</option>
+                                <option value="2" selected="@(Model.Ticket.PriorityId == 2)">Normal</option>
+                                <option value="3" selected="@(Model.Ticket.PriorityId == 3)">Hoch</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a asp-page="/Admin/TicketLogs"
+                           asp-route-ticketId="@Model.Ticket.TicketId"
+                           class="btn btn-outline-secondary">
+
+                            Logs
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            Änderungen speichern
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary mb-4">
+
+                <strong>Dieses Ticket wurde geschlossen.</strong>
+
+                Änderungen, Zuweisungen und neue Kommentare sind nicht mehr möglich.
+
+            </div>
+        }
+
+        <div class="card shadow mb-4">
+
+            <div class="card-header fw-semibold">
+
+                Beschreibung
+
+            </div>
+
+            <div class="card-body">
+
+                @if (string.IsNullOrWhiteSpace(Model.Ticket.Beschreibung))
+                {
+                    <span class="text-muted">
+
+                        Keine Beschreibung vorhanden.
+
+                    </span>
+                }
+                else
+                {
+                    @Model.Ticket.Beschreibung
+                }
+
+            </div>
+
+        </div>
+        <div class="card shadow mb-4">
+
+            <div class="card-header fw-semibold">
+
+                Anhänge
+
+            </div>
+
+            <div class="card-body">
+
+                @if (!Model.Dateien.Any())
+                {
+                    <div class="text-muted">
+
+                        Keine Anhänge vorhanden.
+
+                    </div>
+                }
+                else
+                {
+                    @foreach (DateiModel datei in Model.Dateien)
+                    {
+                        <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+
+                            <div>
+
+                                📄 @datei.Dateiname
+
+                            </div>
+
+                            <a class="btn btn-outline-primary btn-sm"
+                               href="@Helpdesk.Provider.HelpdeskConfigProvider.APIBaseURL/api/Datei/DownloadDatei?dateiId=@datei.DateiId">
+
+                                Download
+
+                            </a>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </div>
+
+        <div class="card shadow mb-4">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <span class="fw-semibold">
+
+                    Kommentare
+
+                </span>
+
+                @if (Model.Ticket.StatusId != 3)
+                {
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            onclick="openKommentarDialog()">
+
+                        Kommentar hinzufügen
+
+                    </button>
+                }
+
+            </div>
+
+            <div class="card-body">
+
+                @if (!Model.Kommentare.Any())
+                {
+                    <div class="text-center text-muted py-5">
+
+                        Noch keine Kommentare vorhanden.
+
+                    </div>
+                }
+                else
+                {
+                    @foreach (KommentarModel kommentar in Model.Kommentare)
+                    {
+                        bool admin =
+                        kommentar.IsAdmin;
+
+                        <div class="mb-3 text-@(admin ? "end" : "start")">
+
+                            <div class="d-inline-block px-3 py-1 rounded-3 shadow-sm @(!admin ? "bg-light border" : "bg-primary text-white")"
+                                 style="max-width:70%;">
+
+                                <div style="line-height:1.1;">
+
+                                    <strong>
+                                        @kommentar.Vorname @kommentar.Nachname
+                                    </strong>
+
+                                    <span class="badge ms-2 @(!admin ? "bg-secondary" : "bg-dark")">
+
+                                        @(admin ? "Administrator" : "Benutzer")
+
+                                    </span>
+
+                                    <small class="ms-3 @(!admin ? "text-muted" : "text-white-50")">
+
+                                        @kommentar.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+
+                                    </small>
+
+                                </div>
+
+                                <div style="margin-top:0px;
+                                             line-height:0.8;
+                                             white-space:pre-wrap;
+                                             word-break:break-word;
+                                             overflow-wrap:anywhere;
+                                             text-align:left;">
+                                    @kommentar.Text
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                    //paging kommentare
+                    @if (Model.SeitenAnzahl > 1)
+                    {
+                        <nav class="mt-3">
+
+                            <ul class="pagination justify-content-center">
+
+                                <li class="page-item @(Model.Seite == 1 ? "disabled" : "")">
+
+                                    <a class="page-link"
+                                       asp-page="/Admin/AdminTicketDetails"
+                                       asp-route-ticketId="@Model.Ticket.TicketId"
+                                       asp-route-seite="@(Model.Seite - 1)">
+
+                                        Zurück
+
+                                    </a>
+
+                                </li>
+
+                                @for (int i = 1; i <= Model.SeitenAnzahl; i++)
+                                {
+                                    <li class="page-item @(i == Model.Seite ? "active" : "")">
+
+                                        <a class="page-link"
+                                           asp-page="/Admin/AdminTicketDetails"
+                                           asp-route-ticketId="@Model.Ticket.TicketId"
+                                           asp-route-seite="@i">
+
+                                            @i
+
+                                        </a>
+
+                                    </li>
+                                }
+
+                                <li class="page-item @(Model.Seite == Model.SeitenAnzahl ? "disabled" : "")">
+
+                                    <a class="page-link"
+                                       asp-page="/Admin/AdminTicketDetails"
+                                       asp-route-ticketId="@Model.Ticket.TicketId"
+                                       asp-route-seite="@(Model.Seite + 1)">
+
+                                        Weiter
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </nav>
+                    }
+                }
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<div class="modal fade"
+     id="kommentarModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Kommentar hinzufügen
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <label class="form-label fw-semibold">
+
+                    Kommentar
+
+                </label>
+
+                <textarea id="KommentarText"
+                          class="form-control"
+                          rows="6"
+                          maxlength="2000"
+                          placeholder="Kommentar eingeben..."></textarea>
+
+                <div class="text-end mt-2">
+
+                    <small id="kommentarCounter"
+                           class="text-muted">
+
+                        0 / 2000
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+
+                    Abbrechen
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="saveKommentar()">
+
+                    Kommentar speichern
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    $("#KommentarText").on("input", function ()
+    {
+        $("#kommentarCounter").text($(this).val().length + " / 2000");
+    });
+
+    $("#KommentarText").trigger("input");
+
+
+
+    function openKommentarDialog()
+    {
+        $("#KommentarText").val("");
+
+        $("#KommentarText").trigger("input");
+
+        var modal =
+            new bootstrap.Modal(document.getElementById("kommentarModal"));
+
+        modal.show();
+    }
+
+
+
+    function saveKommentar()
+    {
+        var text =
+            $("#KommentarText").val();
+
+        if (text.trim() === "")
+        {
+            alert("Bitte einen Kommentar eingeben.");
+
+            return;
+        }
+
+        $.ajax({
+
+            url: "@Helpdesk.Provider.HelpdeskConfigProvider.APIBaseURL/api/Kommentar/InsertKommentar",
+
+            method: "POST",
+
+            contentType: "application/json",
+
+            data: JSON.stringify({
+
+                ticketId: @Model.Ticket.TicketId,
+
+                benutzerId: @Model.UserId,
+
+                text: text
+
+            }),
+
+            success: function ()
+            {
+                location.reload();
+            },
+
+            error: function ()
+            {
+                alert("Kommentar konnte nicht gespeichert werden.");
+            }
+
+        });
+    }
+
+</script>

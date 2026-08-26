@@ -1,0 +1,906 @@
+﻿@page
+@using HelpdeskAPIClient
+@model Helpdesk.Pages.Tickets.TicketDetailsModel
+
+@{
+    ViewData["Title"] = "Ticketdetails";
+}
+
+<div class="container mt-4">
+
+    @if (!string.IsNullOrEmpty(Model.InfoMessage))
+    {
+        <div class="alert alert-success">
+
+            @Model.InfoMessage
+
+        </div>
+    }
+
+    <form id="ticketForm"
+          method="post"
+          enctype="multipart/form-data">
+
+        <input type="hidden"
+               name="TicketId"
+               value="@Model.Ticket.TicketId" />
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div class="d-flex align-items-center">
+
+                <div class="text-muted fst-italic fs-5 mb-1 me-3">
+
+                    Ticket #@Model.Ticket.TicketId
+
+                </div>
+
+                <span class="badge bg-primary fs-6">
+
+                    @Model.Ticket.WertStatus
+
+                </span>
+
+                <span class="badge bg-warning text-dark fs-6 ms-2">
+
+                    @Model.Ticket.WertPriority
+
+                </span>
+
+            </div>
+
+            <div class="d-flex gap-2 flex-shrink-0">
+
+                <a asp-page="/Tickets/MeineTickets"
+                   class="btn btn-outline-secondary">
+
+                    Zurück
+
+                </a>
+
+                @if (Model.Ticket.StatusId != 3 && !Model.EditMode)
+                {
+                    <a asp-page="/Tickets/TicketDetails"
+                       asp-route-ticketId="@Model.Ticket.TicketId"
+                       asp-route-edit="true"
+                       class="btn btn-primary">
+
+                        Bearbeiten
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+
+
+        <div class="card shadow mb-4">
+
+            <div class="card-header fw-semibold">
+
+                Titel
+
+            </div>
+
+            <div class="card-body">
+
+                @if (!Model.EditMode)
+                {
+                    <div class="fs-4 fw-semibold mb-0">
+
+                        @Model.Ticket.Titel
+
+                    </div>
+                }
+                else
+                {
+                    <input class="form-control form-control-lg"
+                           id="Titel"
+                           name="Titel"
+                           maxlength="120"
+                           value="@Model.Ticket.Titel" />
+
+                    <div class="text-end mt-1">
+
+                        <small id="titelCounter"
+                               class="text-muted">
+
+                            @Model.Ticket.Titel.Length / 120
+
+                        </small>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="card shadow mb-4">
+
+            <div class="card-header fw-semibold">
+
+                Ticketinformationen
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <table class="table table-borderless mb-0">
+
+                            <tr>
+
+                                <th style="width:180px;">
+
+                                    Ticket-ID
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.TicketId
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Status
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.WertStatus
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Priorität
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.WertPriority
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Bearbeiter
+
+                                </th>
+
+                                <td>
+
+                                    @if (Model.Ticket.BearbeiterId == null)
+                                    {
+                                        <span class="text-muted">
+
+                                            Noch keinem Bearbeiter zugewiesen
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @(Model.Ticket.BearbeiterVorname + " " + Model.Ticket.BearbeiterNachname)
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <table class="table table-borderless mb-0">
+
+                            <tr>
+
+                                <th style="width:200px;">
+
+                                    Erstellt am
+
+                                </th>
+
+                                <td>
+
+                                    @Model.Ticket.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Erstellt von
+
+                                </th>
+
+                                <td>
+
+                                    Benutzer #@Model.Ticket.BenutzerId
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Zuletzt bearbeitet
+
+                                </th>
+
+                                <td>
+
+                                    @if (Model.Ticket.AktualisiertAm == null)
+                                    {
+                                        <span class="text-muted">
+
+                                            Noch nicht bearbeitet
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @(Model.Ticket.AktualisiertAm?.ToString("dd.MM.yyyy HH:mm") ?? "Noch nicht bearbeitet")
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card shadow mb-4">
+
+            <div class="card-header fw-semibold">
+
+                Beschreibung
+
+            </div>
+
+            <div class="card-body">
+
+                @if (!Model.EditMode)
+                {
+                    @if (string.IsNullOrWhiteSpace(Model.Ticket.Beschreibung))
+                    {
+                        <span class="text-muted">
+
+                            Keine Beschreibung vorhanden.
+
+                        </span>
+                    }
+                    else
+                    {
+                        @Model.Ticket.Beschreibung
+                    }
+                }
+                else
+                {
+                    <textarea class="form-control"
+                          id="Beschreibung"
+                          name="Beschreibung"
+                          rows="8"
+                          maxlength="2000"
+                          required>@Model.Ticket.Beschreibung</textarea>
+
+                    <div class="text-end mt-1">
+
+                        <small id="counter"
+                               class="text-muted">
+
+                            @Model.Ticket.Beschreibung.Length / 2000
+
+                        </small>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+        <div class="card shadow mb-4">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <span class="fw-semibold">
+
+                    Anhänge
+
+                </span>
+
+                @if (Model.Ticket.StatusId != 3 && Model.Dateien.Count < 3)
+                {
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            onclick="document.getElementById('dateien').click();">
+
+                        Datei hinzufügen
+
+                    </button>
+                }
+
+            </div>
+
+            <div class="card-body">
+
+                @if (!Model.Dateien.Any())
+                {
+                    <div class="text-muted">
+
+                        Keine Anhänge vorhanden.
+
+                    </div>
+                }
+                else
+                {
+                    @foreach (DateiModel datei in Model.Dateien)
+                    {
+                        <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+
+                            <div>
+
+                                📄 @datei.Dateiname
+
+                            </div>
+
+                            <div class="d-flex gap-2">
+
+                                <a class="btn btn-outline-primary btn-sm"
+                                   href="@Helpdesk.Provider.HelpdeskConfigProvider.APIBaseURL/api/Datei/DownloadDatei?dateiId=@datei.DateiId">
+
+                                    Download
+
+                                </a>
+
+                                @if (Model.Ticket.StatusId != 3)
+                                {
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            onclick="deleteDatei(@datei.DateiId)">
+
+                                        Entfernen
+
+                                    </button>
+                                }
+
+                            </div>
+
+                        </div>
+                    }
+                }
+
+                @if (Model.Ticket.StatusId != 3 && Model.Dateien.Count < 3)
+                {
+                    <input id="dateien"
+                           type="file"
+                           multiple
+                           accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xlsx"
+                           style="display:none;" />
+
+                    <small class="text-muted d-block mt-2">
+                        Maximal 3 Dateien mit jeweils bis zu 50 MB. 
+                        
+
+                    </small>
+
+                    
+
+                    <small class="text-muted d-block mt-2">
+
+                        Erlaubte Dateitypen: PDF, PNG, JPG, JPEG, DOC, DOCX und XLSX.
+                    </small>
+
+
+                }
+                else if (Model.Dateien.Count >= 3)
+                {
+                    <small class="text-danger">
+
+                        Maximale Anzahl von 3 Anhängen (jeweils bis zu 50 MB) erreicht.
+
+                    </small>
+                }
+
+            </div>
+
+        </div>
+        @if (Model.Ticket.StatusId == 3)
+        {
+            <div class="alert alert-secondary">
+
+                <strong>
+
+                    Dieses Ticket wurde geschlossen.
+
+                </strong>
+
+                Änderungen sind nicht mehr möglich.
+
+            </div>
+        }
+        else if (Model.EditMode)
+        {
+            <div class="d-flex justify-content-end gap-2">
+
+                <a asp-page="/Tickets/TicketDetails"
+                   asp-route-ticketId="@Model.Ticket.TicketId"
+                   class="btn btn-outline-secondary">
+
+                    Abbrechen
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    Änderungen speichern
+
+                </button>
+
+            </div>
+        }
+        </br>
+
+        <div class="card shadow mb-4">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <span class="fw-semibold">
+
+                    Kommentare
+
+                </span>
+
+                @if (Model.Ticket.StatusId != 3)
+                {
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            onclick="openKommentarDialog()">
+
+                        Kommentar hinzufügen
+
+                    </button>
+                }
+
+            </div>
+
+            <div class="card-body">
+
+                @if (!Model.Kommentare.Any())
+                {
+                    <div class="text-center text-muted py-5">
+
+                        Noch keine Kommentare vorhanden.
+
+                    </div>
+                }
+                else
+                {
+                    @foreach (KommentarModel kommentar in Model.Kommentare)
+                    {
+                        bool admin = kommentar.IsAdmin;
+
+                        <div class="mb-3 text-@(admin ? "start" : "end")">
+
+                            <div class="d-inline-block px-3 py-1 rounded-3 shadow-sm @(admin ? "bg-light border" : "bg-primary text-white")"
+                                 style="max-width:70%;">
+
+                                <div style="line-height:1.1;">
+
+                                    <strong>
+                                        @kommentar.Vorname @kommentar.Nachname
+                                    </strong>
+
+                                    <span class="badge ms-2 @(admin ? "bg-dark" : "bg-secondary")">
+
+                                        @(admin ? "Administrator" : "Benutzer")
+
+                                    </span>
+
+                                    <small class="ms-3 @(admin ? "text-muted" : "text-white-50")">
+
+                                        @kommentar.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+
+                                    </small>
+
+                                </div>
+
+                                <div style="margin-top:0px;
+                     line-height:0.8;
+                     white-space:pre-wrap;
+                     word-break:break-word;
+                     overflow-wrap:anywhere;
+                     text-align:left;">
+
+                                    @kommentar.Text
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+
+                    //KOMMENTARE PAGING
+                    @if (Model.SeitenAnzahl > 1)
+                    {
+                        <nav class="mt-3">
+
+                            <ul class="pagination justify-content-center">
+
+                                <li class="page-item @(Model.Seite == 1 ? "disabled" : "")">
+
+                                    <a class="page-link"
+                                       asp-page="/Tickets/TicketDetails"
+                                       asp-route-ticketId="@Model.Ticket.TicketId"
+                                       asp-route-seite="@(Model.Seite - 1)">
+
+                                        Zurück
+
+                                    </a>
+
+                                </li>
+
+                                @for (int i = 1; i <= Model.SeitenAnzahl; i++)
+                                {
+                                    <li class="page-item @(i == Model.Seite ? "active" : "")">
+
+                                        <a class="page-link"
+                                           asp-page="/Tickets/TicketDetails"
+                                           asp-route-ticketId="@Model.Ticket.TicketId"
+                                           asp-route-seite="@i">
+
+                                            @i
+
+                                        </a>
+
+                                    </li>
+                                }
+
+                                <li class="page-item @(Model.Seite == Model.SeitenAnzahl ? "disabled" : "")">
+
+                                    <a class="page-link"
+                                       asp-page="/Tickets/TicketDetails"
+                                       asp-route-ticketId="@Model.Ticket.TicketId"
+                                       asp-route-seite="@(Model.Seite + 1)">
+
+                                        Weiter
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </nav>
+                    }
+                }
+
+            </div>
+
+        </div>
+
+
+
+    </form>
+
+</div>
+<div class="modal fade"
+     id="kommentarModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Kommentar hinzufügen
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Kommentar
+
+                    </label>
+
+                    <textarea id="KommentarText"
+                              class="form-control"
+                              rows="6"
+                              maxlength="2000"
+                              placeholder="Kommentar eingeben..."></textarea>
+
+                </div>
+
+                <div class="text-end">
+
+                    <small id="kommentarCounter"
+                           class="text-muted">
+
+                        0 / 2000
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+
+                    Abbrechen
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="saveKommentar()">
+
+                    Kommentar speichern
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    $("#Titel").on("input", function ()
+    {
+        $("#titelCounter").text($(this).val().length + " / 120");
+    });
+
+    $("#Beschreibung").on("input", function ()
+    {
+        $("#counter").text($(this).val().length + " / 2000");
+    });
+
+    $("#KommentarText").on("input", function ()
+    {
+        $("#kommentarCounter").text($(this).val().length + " / 2000");
+    });
+
+    @* Führt das "input"-Ereignis direkt beim Laden der Seite aus,
+       damit die Zeichenzähler sofort den aktuellen Wert anzeigen. *@
+    $("#Titel").trigger("input");
+    $("#Beschreibung").trigger("input");
+    $("#KommentarText").trigger("input");
+
+
+
+    function openKommentarDialog()
+    {
+        $("#KommentarText").val("");
+        $("#KommentarText").trigger("input");
+
+        var modal =
+            new bootstrap.Modal(document.getElementById("kommentarModal"));
+
+        modal.show();
+    }
+
+
+
+    function saveKommentar()
+    {
+        var text =
+            $("#KommentarText").val();
+
+        if (text.trim() === "")
+        {
+            alert("Bitte einen Kommentar eingeben.");
+            return;
+        }
+
+        $.ajax({
+
+            url: "@Helpdesk.Provider.HelpdeskConfigProvider.APIBaseURL/api/Kommentar/InsertKommentar",
+
+            method: "POST",
+
+            contentType: "application/json",
+
+            data: JSON.stringify({
+
+                ticketId: @Model.Ticket.TicketId,
+
+                benutzerId: @Model.UserId,
+
+                text: text
+
+            }),
+
+            success: function ()
+            {
+                var modal = bootstrap.Modal.getInstance(document.getElementById("kommentarModal"));
+
+                modal.hide();
+
+                $("#KommentarText").val("");
+                $("#KommentarText").trigger("input");
+
+                window.location.reload();
+            },
+
+            error: function ()
+            {
+                alert("Kommentar konnte nicht gespeichert werden.");
+            }
+
+        });
+    }
+
+    //DATEIUPLOAD:
+
+
+    function uploadDateien(){
+        var files = $("#dateien")[0].files;
+            const maxDateigroesse = 50 * 1024 * 1024; // 50 MB
+
+        for (var i = 0; i < files.length; i++)
+        {
+                if (files[i].size > maxDateigroesse)
+                {
+                    $("#dateien").val("");
+
+                    alert("Die Datei '" + files[i].name + "' darf maximal 50 MB groß sein.");
+
+                    return;
+                }
+        }
+
+        var vorhandeneDateien = @Model.Dateien.Count;
+
+                if (files.length == 0)
+                {
+                    return;
+                }
+
+               if (vorhandeneDateien + files.length > 3)
+               {
+                    $("#dateien").val("");
+
+                    alert("Es dürfen maximal 3 Dateien pro Ticket vorhanden sein.");
+
+                    return;
+               }
+
+        var formData = new FormData();
+
+        formData.append("TicketId", @Model.Ticket.TicketId);
+
+        for (var i = 0; i < files.length; i++)
+        {
+            formData.append("Datei", files[i]);
+        }
+
+        $.ajax({
+
+            url: "@Helpdesk.Provider.HelpdeskConfigProvider.APIBaseURL/api/Datei/InsertDatei",
+
+            type: "POST",
+
+            data: formData,
+
+            processData: false,
+
+            contentType: false,
+
+                    success: function ()
+                    {
+                        window.location = "/Tickets/TicketDetails?ticketId=@Model.Ticket.TicketId&info=Datei wurde erfolgreich hochgeladen.";
+                    },
+
+                error: function (err)
+                {
+                    $("#dateien").val("");
+                    if (err.responseJSON && err.responseJSON.errorMessage)
+                    {
+                        alert(err.responseJSON.errorMessage);
+                    }
+                    else
+                    {
+                        alert("Dateien konnten nicht hochgeladen werden.");
+                    }
+                }
+
+        });
+    }
+
+        function deleteDatei(dateiId)
+    {
+        if (!confirm("Datei wirklich entfernen?"))
+        {
+            return;
+        }
+
+        $.ajax({
+
+            url: "@Helpdesk.Provider.HelpdeskConfigProvider.APIBaseURL/api/Datei/DeleteDatei?dateiId=" + dateiId,
+
+            type: "POST",
+
+            success: function ()
+            {
+                window.location =
+                    "/Tickets/TicketDetails?ticketId=@Model.Ticket.TicketId&info=Datei wurde erfolgreich entfernt.";
+            },
+
+            error: function ()
+            {
+                alert("Datei konnte nicht entfernt werden.");
+            }
+
+        });
+    }
+
+
+
+
+
+        $("#dateien").change(function ()
+    {
+        uploadDateien();
+    });
+</script>

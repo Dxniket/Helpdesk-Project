@@ -1,0 +1,138 @@
+﻿@page
+@model Helpdesk.Pages.Admin.NeuerBenutzerModel
+
+@{
+    ViewData["Title"] = "Neuer Benutzer";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:80vh;">
+
+    <div class="card shadow rounded-4 p-4" style="max-width:550px;width:100%;">
+
+        <div class="text-center mb-4">
+
+            <h2>Neuen Benutzer anlegen</h2>
+
+            <p class="text-muted">
+                Benutzer für das Helpdesk erstellen.
+            </p>
+
+        </div>
+
+        @if (!String.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <form method="post">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Vorname
+                </label>
+
+                <input class="form-control"
+                       type="text"
+                       name="txtVorname"
+                       value="@Model.Benutzer.Vorname"
+                       required />
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Nachname
+                </label>
+
+                <input class="form-control"
+                       type="text"
+                       name="txtNachname"
+                       value="@Model.Benutzer.Nachname"
+                       required />
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    E-Mail
+                </label>
+
+                <input class="form-control"
+                       type="email"
+                       name="txtEmail"
+                       value="@Model.Benutzer.Email"
+                       required />
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Telefonnummer
+                </label>
+
+                <input class="form-control"
+                       type="text"
+                       name="txtTelefonnummer"
+                       value="@Model.Benutzer.Telefonnummer"
+                       required />
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Passwort
+                </label>
+
+                <input class="form-control"
+                       type="password"
+                       name="txtPasswort"
+                       required />
+
+            </div>
+
+            <div class="form-check mb-4">
+
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="chkAdmin"
+                       name="chkAdmin" />
+
+                <label class="form-check-label"
+                       for="chkAdmin">
+
+                    Administrator
+
+                </label>
+
+            </div>
+
+            <div class="d-grid gap-2">
+
+                <button class="btn btn-success"
+                        type="submit">
+
+                    Benutzer anlegen
+
+                </button>
+
+                <a asp-page="/Admin/AdminPortal"
+                   class="btn btn-outline-secondary">
+
+                    Zurück
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

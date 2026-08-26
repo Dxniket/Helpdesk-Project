@@ -1,0 +1,789 @@
+﻿@page
+@using HelpdeskAPIClient
+@model Helpdesk.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Startseite";
+}
+
+<div class="container-fluid mt-4">
+
+@if (Model.IsLoggedIn)
+{
+
+    <div class="card border-0 shadow-lg mb-4">
+
+        <div class="card-body p-5">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <div class="text-muted small text-uppercase fw-semibold">
+
+                        Helpdesk Dashboard
+
+                    </div>
+
+                    <h1 class="display-6 fw-bold mt-2 mb-3">
+
+                        Willkommen zurück,
+                        @Model.Vorname @Model.Nachname 👋
+
+                    </h1>
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <a asp-page="/Tickets/NeuesTicket"
+                           class="btn btn-primary btn-lg">
+
+                            <i class="bi bi-plus-circle me-2"></i>
+
+                            Neues Ticket
+
+                        </a>
+
+                        <a asp-page="/Tickets/MeineTickets"
+                           class="btn btn-outline-primary btn-lg">
+
+                            <i class="bi bi-ticket-perforated me-2"></i>
+
+                            Meine Tickets
+
+                        </a>
+
+                        <a asp-page="/Profile/MeinProfil"
+                           class="btn btn-outline-secondary btn-lg">
+
+                            <i class="bi bi-person-circle me-2"></i>
+
+                            Mein Profil
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+               
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+
+                                Alle Tickets
+
+                            </div>
+
+                            <h2 class="fw-bold mt-2 mb-0">
+
+                                @Model.Dashboard.AlleTickets
+
+                            </h2>
+
+                        </div>
+
+                        
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+
+                                Offen
+
+                            </div>
+
+                            <h2 class="fw-bold text-primary mt-2 mb-0">
+
+                                @Model.Dashboard.OffeneTickets
+
+                            </h2>
+
+                        </div>
+
+                        
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+
+                                In Bearbeitung
+
+                            </div>
+
+                            <h2 class="fw-bold text-warning mt-2 mb-0">
+
+                                @Model.Dashboard.TicketsInBearbeitung
+
+                            </h2>
+
+                        </div>
+
+                       
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+
+                                Geschlossen
+
+                            </div>
+
+                            <h2 class="fw-bold text-secondary mt-2 mb-0">
+
+                                @Model.Dashboard.GeschlosseneTickets
+
+                            </h2>
+
+                        </div>
+
+                        
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+        <div class="row g-4 mb-4">
+
+            <div class="col-lg-8">
+
+                <div class="card shadow border-0 h-100">
+
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-0">
+
+                            Letzte Aktivität
+
+                        </h5>
+
+                        <a asp-page="/Tickets/MeineTickets"
+                           class="btn btn-sm btn-outline-primary">
+
+                            Alle anzeigen
+
+                        </a>
+
+                    </div>
+
+                    <div class="card-body p-0">
+
+                        @if (Model.LetzteTickets.Any())
+                        {
+                            <div class="list-group list-group-flush">
+
+                                @foreach (DashboardTicketModel ticket in Model.LetzteTickets)
+                                {
+                                    <div class="list-group-item py-3">
+
+                                        <div class="d-flex justify-content-between align-items-center">
+
+                                            <div>
+
+                                                <div class="fw-semibold">
+
+                                                    @ticket.Titel
+
+                                                </div>
+
+                                                <small class="text-muted">
+
+                                                    Ticket #@ticket.TicketId •
+                                                    @ticket.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+
+                                                </small>
+
+                                            </div>
+
+                                            @if (ticket.WertStatus == "Offen")
+                                            {
+                                                <span class="badge bg-primary">
+                                                    @ticket.WertStatus
+                                                </span>
+                                            }
+                                            else if (ticket.WertStatus == "In Bearbeitung")
+                                            {
+                                                <span class="badge bg-warning text-dark">
+                                                    @ticket.WertStatus
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">
+                                                    @ticket.WertStatus
+                                                </span>
+                                            }
+
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted p-5">
+
+                                Noch keine Tickets vorhanden.
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+
+                <div class="card shadow border-0 mb-4">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Schnellzugriff
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body d-grid gap-2">
+
+                        <a asp-page="/Tickets/NeuesTicket"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-plus-circle me-2"></i>
+
+                            Neues Ticket erstellen
+
+                        </a>
+
+                        <a asp-page="/Tickets/MeineTickets"
+                           class="btn btn-outline-primary">
+
+                            <i class="bi bi-ticket-perforated me-2"></i>
+
+                            Meine Tickets
+
+                        </a>
+
+                        <a asp-page="/Profile/MeinProfil"
+                           class="btn btn-outline-secondary">
+
+                            <i class="bi bi-person me-2"></i>
+
+                            Mein Profil
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="card shadow border-0">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Ticketübersicht
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span>Hohe Priorität</span>
+
+                            <span class="badge bg-danger">
+
+                                @Model.Dashboard.HohePrioritaet
+
+                            </span>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span>Diesen Monat erstellt</span>
+
+                            <strong>
+
+                                @Model.Dashboard.DiesenMonatErstellt
+
+                            </strong>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>Heute erstellt</span>
+
+                            <strong>
+
+                                @Model.Dashboard.HeuteErstellt
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row g-4 mb-4">
+
+            <div class="col-lg-8">
+
+                <div class="card shadow border-0">
+
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-0">
+
+                            Meine letzten Tickets
+
+                        </h5>
+
+                        <span class="badge bg-primary">
+
+                            @Model.Dashboard.AlleTickets Tickets
+
+                        </span>
+
+                    </div>
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>
+
+                                        Ticket
+
+                                    </th>
+
+                                    <th>
+
+                                        Titel
+
+                                    </th>
+
+                                    <th>
+
+                                        Status
+
+                                    </th>
+
+                                    <th>
+
+                                        Priorität
+
+                                    </th>
+
+                                    <th>
+
+                                        Erstellt
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                @if (Model.LetzteTickets.Any())
+                                {
+                                    @foreach (DashboardTicketModel ticket in Model.LetzteTickets)
+                                    {
+                                        <tr>
+
+                                            <td class="fw-semibold">
+
+                                                #@ticket.TicketId
+
+                                            </td>
+
+                                            <td>
+
+                                                @ticket.Titel
+
+                                            </td>
+
+                                            <td>
+
+                                                @if (ticket.WertStatus == "Offen")
+                                                {
+                                                    <span class="badge bg-primary">
+                                                        @ticket.WertStatus
+                                                    </span>
+                                                }
+                                                else if (ticket.WertStatus == "In Bearbeitung")
+                                                {
+                                                    <span class="badge bg-warning text-dark">
+                                                        @ticket.WertStatus
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">
+                                                        @ticket.WertStatus
+                                                    </span>
+                                                }
+
+                                            </td>
+
+                                            <td>
+
+                                                @if (ticket.WertPriority == "Niedrig")
+                                                {
+                                                    <span class="badge bg-warning text-dark">
+                                                        @ticket.WertPriority
+                                                    </span>
+                                                }
+                                                else if (ticket.WertPriority == "Normal")
+                                                {
+                                                    <span class="badge bg-success">
+                                                        @ticket.WertPriority
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        @ticket.WertPriority
+                                                    </span>
+                                                }
+
+                                            </td>
+
+                                            <td>
+
+                                                @ticket.ErstelltAm.ToString("dd.MM.yyyy")
+
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td colspan="5"
+                                            class="text-center text-muted py-5">
+
+                                            Es wurden noch keine Tickets erstellt.
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+
+                <div class="card shadow border-0">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Zusammenfassung
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span>
+
+                                Niedrige Priorität
+
+                            </span>
+
+                            <span class="badge bg-warning">
+
+                                @Model.Dashboard.NiedrigePrioritaet
+
+                            </span>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span>
+
+                                Normale Priorität
+
+                            </span>
+
+                            <span class="badge bg-success text-light">
+
+                                @Model.Dashboard.NormalePrioritaet
+
+                            </span>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>
+
+                                Hohe Priorität
+
+                            </span>
+
+                            <span class="badge bg-danger">
+
+                                @Model.Dashboard.HohePrioritaet
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+
+        <div class="card border-0 shadow-lg">
+
+            <div class="card-body p-5">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-7">
+
+                        <div class="text-uppercase text-primary fw-semibold mb-2">
+
+                            Helpdesk System
+
+                        </div>
+
+                        <h1 class="display-5 fw-bold mb-4">
+
+                            Willkommen beim Helpdesk
+
+                        </h1>
+
+                        <p class="lead text-muted mb-4">
+
+                            Verwalte deine Support-Anfragen einfach, schnell und übersichtlich.
+                            Erstelle Tickets, verfolge den Bearbeitungsstatus und bleibe jederzeit
+                            über deine Anfragen informiert.
+
+                        </p>
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+
+                                <div class="border rounded-3 p-3 h-100">
+
+                                    <h6 class="fw-bold">
+
+                                        Tickets erstellen
+
+                                    </h6>
+
+                                    <small class="text-muted">
+
+                                        Support-Anfragen bequem online erfassen.
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="border rounded-3 p-3 h-100">
+
+                                    <h6 class="fw-bold">
+
+                                        Bearbeitungsstatus
+
+                                    </h6>
+
+                                    <small class="text-muted">
+
+                                        Jederzeit den aktuellen Stand verfolgen.
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="border rounded-3 p-3 h-100">
+
+                                    <h6 class="fw-bold">
+
+                                        Kommentare
+
+                                    </h6>
+
+                                    <small class="text-muted">
+
+                                        Direkte Kommunikation mit dem Support.
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="border rounded-3 p-3 h-100">
+
+                                    <h6 class="fw-bold">
+
+                                        Übersicht
+
+                                    </h6>
+
+                                    <small class="text-muted">
+
+                                        Alle Tickets an einem zentralen Ort.
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <a asp-page="/Log/LogIn"
+                           class="btn btn-primary btn-lg">
+
+                            Jetzt anmelden
+
+                        </a>
+
+                    </div>
+
+                   
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

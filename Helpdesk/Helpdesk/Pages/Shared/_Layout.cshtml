@@ -1,0 +1,209 @@
+﻿@using Helpdesk.Pages.Base
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Helpdesk</title>
+
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet"
+          href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Bootstrap Table -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.2/dist/bootstrap-table.min.css" />
+
+    <!-- Eigene Styles -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Helpdesk.styles.css" asp-append-version="true" />
+</head>
+
+@{
+        HttpContext context = ViewContext.HttpContext;
+
+        int? userId = HelpdeskPageBase.GetUserIdFromRequest(context.Request);
+
+        bool isAdmin = HelpdeskPageBase.GetIsAdminFromRequest(context.Request);
+
+        string currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+}
+
+@functions
+{
+        public string NavClass(string currentPage, string targetPage)
+        {
+                if (string.Equals(currentPage, targetPage, StringComparison.OrdinalIgnoreCase))
+                {
+                        return "nav-link rounded-3 px-3 py-2 mb-1 fw-semibold bg-light border text-dark";
+                }
+
+                return "nav-link rounded-3 px-3 py-2 mb-1 text-dark";
+        }
+}
+
+<body class="bg-body-tertiary">
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+
+            <div class="container-fluid">
+
+                <a class="navbar-brand fw-bold"
+                   asp-page="/Index">
+                    Helpdesk
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse"
+                     id="navbarMain">
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+                        @if (userId == null)
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm"
+                                   asp-page="/Log/LogIn">
+                                    Login
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-page="/Profile/MeinProfil">
+                                    Mein Profil
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="btn btn-outline-secondary btn-sm ms-lg-2"
+                                   asp-page="/Log/LogOut">
+                                    Logout
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <div class="container-fluid">
+
+        <div class="row min-vh-100">
+
+            @if (userId != null)
+            {
+                <aside class="col-12 col-lg-3 col-xl-2 bg-white border-end p-0">
+
+                    <div class="p-3 border-bottom">
+
+                        <div class="fw-bold fs-5">
+                            Navigation
+                        </div>
+
+                        <div class="text-muted small">
+                            Alle Bereiche
+                        </div>
+
+                    </div>
+
+                    <nav class="nav flex-column p-2">
+
+                        <a class="@NavClass(currentPage, "/Index")"
+                           asp-page="/Index">
+                            Dashboard
+                        </a>
+
+                        <a class="@NavClass(currentPage, "/Tickets")"
+                           asp-page="/Tickets/MeineTickets">
+                            Meine Tickets
+                        </a>
+
+                        <a class="@NavClass(currentPage, "/NeuesTicket")"
+                           asp-page="/Tickets/NeuesTicket">
+                            Neues Ticket
+                        </a>
+
+                        <hr class="my-3" />
+
+                        <a class="@NavClass(currentPage, "/MeinProfil")"
+                           asp-page="/Profile/MeinProfil">
+                            Mein Profil
+                        </a>
+
+                        @if (isAdmin)
+                        {
+                            <hr class="my-3" />
+
+                            <div class="px-3 text-uppercase small text-muted fw-bold">
+                                Admin
+                            </div>
+
+                            <a class="@NavClass(currentPage, "/Admin/AdminPortal")"
+                               asp-page="/Admin/AdminPortal">
+                                Benutzerverwaltung
+                            </a>
+
+                            <a class="@NavClass(currentPage, "/Admin/Tickets")"
+                               asp-page="/Admin/TicketVerwaltung">
+                                Ticketverwaltung
+                            </a>
+                        }
+
+                        <hr class="my-3" />
+
+                        <a class="nav-link rounded-3 px-3 py-2 mb-1 text-danger"
+                           asp-page="/Log/LogOut">
+                            Logout
+                        </a>
+
+                    </nav>
+
+                </aside>
+            }
+
+            <div class="@(userId != null ? "col-lg-10" : "col-12") p-4">
+
+                <main role="main">
+                    @RenderBody()
+                </main>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.2/dist/bootstrap-table.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+﻿@page
+@model Helpdesk.Pages.Admin.TicketLogsModel
+
+@{
+    ViewData["Title"] = "Ticket Logs";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2>Ticket Logs</h2>
+
+        <p class="text-muted mb-0">
+            Verlauf aller Änderungen dieses Tickets.
+        </p>
+
+    </div>
+
+    <a asp-page="/Admin/AdminTicketDetails"
+   asp-route-ticketId="@Model.TicketId"
+   class="btn btn-outline-secondary">
+    Zurück
+</a>
+
+</div>
+
+<div class="card shadow">
+
+    <div class="card-body">
+
+        <table id="table"
+               data-toggle="table"
+               data-search="true"
+               data-pagination="true"
+               data-page-size="10"
+               data-page-list="[5,10,25,50]"
+               data-show-refresh="true"
+               data-show-columns="true">
+
+            <thead>
+
+                <tr>
+
+
+                    <th data-field="ErstelltAm"
+                        data-sortable="true">
+                        Zeitpunkt
+                    </th>
+
+                    <th data-field="Beschreibung"
+                        data-sortable="true">
+                        Ereignis
+                    </th>
+
+                </tr>
+
+            </thead>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        var logs = @Html.Raw(Model.LogsAsJson);
+
+        logs.forEach(log =>
+        {
+            log.ErstelltAm =
+                log.ErstelltAm
+                    .substring(0,16)
+                    .replace("T"," ");
+        });
+
+        $(function ()
+        {
+            $("#table").bootstrapTable("load", logs);
+        });
+
+    </script>
+}

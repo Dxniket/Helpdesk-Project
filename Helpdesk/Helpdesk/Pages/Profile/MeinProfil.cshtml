@@ -1,0 +1,172 @@
+﻿@page
+@model Helpdesk.Pages.Profile.MeinProfilModel
+
+@{
+    ViewData["Title"] = "Mein Profil";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h2>Mein Profil</h2>
+        <p class="text-muted">
+            Persönliche Daten verwalten.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.InfoMessage))
+    {
+        <div class="alert alert-success">
+            @Model.InfoMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header">
+            Persönliche Daten
+        </div>
+
+        <div class="card-body">
+
+            <form method="post">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Vorname</label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="Vorname"
+                               value="@Model.Daten.Vorname"
+                               required />
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Nachname</label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="Nachname"
+                               value="@Model.Daten.Nachname"
+                               required />
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>E-Mail</label>
+
+                        <input type="email"
+                               class="form-control"
+                               name="Email"
+                               value="@Model.Daten.Email"
+                               required />
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Telefonnummer</label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="Telefonnummer"
+                               value="@Model.Daten.Telefonnummer"
+                               required />
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary"
+                        type="submit">
+
+                    Änderungen speichern
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header">
+            Passwort ändern
+        </div>
+
+        <div class="card-body">
+
+            <form method="post"
+                  asp-page-handler="Password">
+
+                <div class="mb-3">
+
+                    <label>Neues Passwort</label>
+
+                    <input type="password"
+                           class="form-control"
+                           name="NeuesPasswort"
+                           required />
+
+                </div>
+
+                <button class="btn btn-primary">
+
+                    Passwort ändern
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="card border-danger shadow">
+
+        <div class="card-header bg-danger text-white">
+            Konto löschen
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                Das Konto wird dauerhaft gelöscht.
+            </p>
+
+            <form method="post"
+                  asp-page-handler="Delete">
+
+                <button class="btn btn-danger"
+                        onclick="return confirm('Benutzer wirklich löschen?')">
+
+                    Konto löschen
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

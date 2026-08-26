@@ -1,0 +1,109 @@
+﻿@page
+@model Helpdesk.Pages.Admin.TicketVerwaltungModel
+
+@{
+    ViewData["Title"] = "Ticketverwaltung";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>Ticketverwaltung</h2>
+
+            <p class="text-muted mb-0">
+                Übersicht aller Tickets.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table id="table"
+                   data-toggle="table"
+                   data-search="true"
+                   data-pagination="true"
+                   data-page-size="10"
+                   data-page-list="[5,10,25,50]"
+                   data-show-refresh="true"
+                   data-show-columns="true">
+
+                <thead>
+
+                    <tr>
+
+                        <th data-field="TicketId" data-sortable="true">
+                            TicketId
+                        </th>
+
+                        <th data-field="Benutzer" data-sortable="true">
+                            Benutzer
+                        </th>
+
+                        <th data-field="Titel" data-sortable="true">
+                            Titel
+                        </th>
+
+                        <th data-field="WertStatus" data-sortable="true">
+                            Status
+                        </th>
+
+                        <th data-field="WertPriority" data-sortable="true">
+                            Priorität
+                        </th>
+
+                        <th data-field="ErstelltAm" data-sortable="true">
+                            Erstellt
+                        </th>
+
+                        <th data-field="Aktion">
+                            Aktion
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        var tickets = @Html.Raw(Model.TicketsAsJson);
+
+                tickets.forEach(ticket =>
+        {
+            ticket.Benutzer =
+                ticket.Vorname + " " + ticket.Nachname;
+
+            ticket.ErstelltAm =
+                ticket.ErstelltAm
+                    .substring(0,16)
+                    .replace("T"," ");
+
+            ticket.Aktion =
+                "<a class='btn btn-primary btn-sm' href='/Admin/AdminTicketDetails?ticketId="
+                + ticket.TicketId +
+                "'>Öffnen</a>";
+        });
+
+        $(function ()
+        {
+            $("#table").bootstrapTable("load", tickets);
+        });
+
+    </script>
+}
