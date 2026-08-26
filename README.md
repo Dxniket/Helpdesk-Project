@@ -14,10 +14,6 @@ An internal helpdesk application for creating, managing and tracking support tic
 
 ## Screenshots
 
-### Home Page
-
-![Helpdesk Home Page](screenshots/home.png)
-
 ### User Dashboard
 
 ![Helpdesk Dashboard](screenshots/dashboard.png)
