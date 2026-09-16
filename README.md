@@ -340,7 +340,6 @@ The installation guide explains the setup and deployment process, including:
 * Deploying the Razor Pages application
 * Configuring the Azure services
 
-The installation documentation is currently written in German.
 
 ---
 
@@ -352,7 +351,7 @@ Further information about the development and implementation of the project is a
 
 The documentation contains additional information about the project, its architecture, database and implemented functionality.
 
-The documentation is currently written in German.
+
 
 ---
 
