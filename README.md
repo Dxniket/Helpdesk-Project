@@ -361,7 +361,7 @@ The documentation contains additional information about the project, its archite
 
 Software Development Apprentice
 
-**GitHub:** `Dxniket
+**GitHub:** Dxniket
 
 **Project:** Helpdesk – Ticket Management System
 
