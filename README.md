@@ -12,13 +12,7 @@ The project is divided into three main parts: an ASP.NET Razor Pages frontend, a
 
 I developed the complete application during the four-week project period. This included planning the application, designing the database, creating the Stored Procedures, implementing the API and frontend, adding authentication and authorization, implementing the ticket and file management functionality, testing the application and deploying it to Microsoft Azure.
 
-### AI Assistance
 
-I used AI tools during the development of this project as a supporting tool. I mainly used AI for ideas, implementation suggestions, troubleshooting and help with individual parts of the project. This was especially useful when working on frontend implementation and Bootstrap classes.
-
-I reviewed and adapted the suggestions myself and made the final implementation decisions. The project itself was developed and implemented independently by me, and I understand the functionality and code of the application.
-
-I also used AI assistance when writing and improving this README.
 
 ---
 
@@ -69,31 +63,11 @@ The application is currently deployed on Microsoft Azure.
 https://helpdesk-web-ere2edcnh8grd6ab.germanywestcentral-01.azurewebsites.net
 
 **API / Swagger:**
-https://helpdesk-api-cebjdkgehwhxgxfk.germanywestcentral-01.azurewebsites.net/Swagger
+private
 
 The user interface is currently available in German.
 
-### Demo Accounts
 
-The live application does not provide public registration. The following demo accounts can be used to test the application.
-
-#### Test User
-
-**Email:** `hallo@gmail.com`
-**Password:** `123`
-
-The test user account provides access to the normal user functionality.
-
-#### Administrator
-
-**Email:** `12@gmx.de`
-**Password:** `12`
-
-The administrator account provides access to the additional administration functionality.
-
-> These accounts are demo accounts created for testing the live application.
-
----
 
 ## Features
 
